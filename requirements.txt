@@ -1,0 +1,7 @@
+streamlit
+streamlit-autorefresh
+requests
+google-genai
+SpeechRecognition
+edge-tts
+pydub
