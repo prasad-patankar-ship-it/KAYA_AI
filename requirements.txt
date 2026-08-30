@@ -2,6 +2,7 @@ streamlit
 streamlit-autorefresh
 requests
 google-genai
+python-dotenv
 SpeechRecognition
 edge-tts
 pydub
