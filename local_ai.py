@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import requests
 
 
@@ -10,9 +11,9 @@ import requests
 OLLAMA_URL = "http://localhost:11434/api/chat"
 OLLAMA_MODEL = "qwen3:1.7b"
 
-# Cloud mode is automatically detected on Streamlit Cloud.
-# Set KAYA_CLOUD_MODE=true in Streamlit Secrets for cloud.
-CLOUD_MODE = os.getenv("KAYA_CLOUD_MODE", "").lower() == "true"
+CLOUD_MODE = (
+    os.getenv("KAYA_CLOUD_MODE", "").lower() == "true"
+)
 
 
 # ============================================================
@@ -46,62 +47,89 @@ def ask_qwen(prompt):
 
 
 # ============================================================
-# CLOUD GEMINI
+# CLOUD GEMINI WITH RETRY
 # ============================================================
 
 def ask_gemini_cloud(prompt):
 
-    try:
+    from google import genai
 
-        from google import genai
+    api_key = os.getenv("GEMINI_API_KEY")
 
-        api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "GEMINI_API_KEY is not configured."
+        )
 
-        if not api_key:
-            raise ValueError(
-                "GEMINI_API_KEY is not configured."
+    client = genai.Client(
+        api_key=api_key
+    )
+
+    max_attempts = 4
+
+    for attempt in range(max_attempts):
+
+        try:
+
+            response = client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=prompt
             )
 
-        client = genai.Client(
-            api_key=api_key
-        )
+            if response and response.text:
 
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt
-        )
+                return response.text.strip()
 
-        if response and response.text:
-            return response.text.strip()
+            raise RuntimeError(
+                "Gemini returned an empty response."
+            )
 
-        raise ValueError(
-            "Gemini returned an empty response."
-        )
+        except Exception as e:
 
-    except Exception as e:
+            error_text = str(e)
 
-        raise RuntimeError(
-            f"Cloud AI error: {e}"
-        )
+            is_temporary = (
+                "503" in error_text
+                or "UNAVAILABLE" in error_text
+                or "high demand" in error_text.lower()
+                or "temporarily" in error_text.lower()
+            )
+
+            if not is_temporary:
+
+                raise RuntimeError(
+                    f"Cloud AI error: {e}"
+                )
+
+            if attempt == max_attempts - 1:
+
+                raise RuntimeError(
+                    "KAYA AI is temporarily busy. "
+                    "Please try again in a few seconds."
+                )
+
+            # Exponential backoff:
+            # 5 → 10 → 20 seconds
+
+            delay = 5 * (2 ** attempt)
+
+            print(
+                f"Gemini temporarily unavailable. "
+                f"Retrying in {delay} seconds..."
+            )
+
+            time.sleep(delay)
 
 
 # ============================================================
-# UNIFIED AI FUNCTION
+# UNIFIED AI
 # ============================================================
 
 def ask_ai(prompt):
 
-    # --------------------------------------------------------
-    # CLOUD
-    # --------------------------------------------------------
-
     if CLOUD_MODE:
 
         return ask_gemini_cloud(prompt)
-
-    # --------------------------------------------------------
-    # LOCAL
-    # --------------------------------------------------------
 
     return ask_qwen(prompt)
 
@@ -206,42 +234,26 @@ Return exactly this structure:
 
         result = result.strip()
 
-        # ----------------------------------------------------
-        # Remove markdown JSON fences if model adds them
-        # ----------------------------------------------------
-
         if result.startswith("```json"):
 
-            result = result[
-                len("```json"):
-            ]
+            result = result[len("```json"):]
 
         if result.startswith("```"):
 
-            result = result[
-                len("```"):
-            ]
+            result = result[len("```"):]
 
         if result.endswith("```"):
 
-            result = result[
-                :-3
-            ]
+            result = result[:-3]
 
         result = result.strip()
-
-        # ----------------------------------------------------
-        # Extract JSON if model added extra text
-        # ----------------------------------------------------
 
         start = result.find("{")
         end = result.rfind("}")
 
         if start != -1 and end != -1:
 
-            result = result[
-                start:end + 1
-            ]
+            result = result[start:end + 1]
 
         data = json.loads(result)
 
@@ -250,10 +262,6 @@ Return exactly this structure:
             raise ValueError(
                 "Invalid intent response"
             )
-
-        # ----------------------------------------------------
-        # Ensure required fields exist
-        # ----------------------------------------------------
 
         data.setdefault(
             "intent",
