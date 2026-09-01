@@ -1,65 +1,105 @@
-# 🩺 KAYA AI
+# KAYA AI
 
 ### Multilingual AI-Powered Medication Assistance System
 
-<p align="center">
+> **Healthcare technology that speaks your language.**
 
-**Healthcare technology that speaks your language.**
-
-<br><br>
-
-<a href="https://kaya-ai.streamlit.app/">
-  <img src="https://img.shields.io/badge/🚀%20Live%20Demo-KAYA%20AI-0ea5a8" alt="Live Demo">
-</a>
-&nbsp;
-<img src="https://img.shields.io/badge/Python-3.x-3776AB" alt="Python">
-&nbsp;
-<img src="https://img.shields.io/badge/Streamlit-1.x-FF4B4B" alt="Streamlit">
-&nbsp;
-<img src="https://img.shields.io/badge/AI-Generative%20AI-6C63FF" alt="AI">
-
-</p>
+KAYA AI is an AI-powered medication assistance system designed to make medication-related support simpler, more accessible, and more natural through conversational AI, voice interaction, multilingual communication, medication assistance, and reminders.
 
 ---
 
-## 🌟 About KAYA
+## 🌐 Live Prototype
 
-**KAYA AI** is a software-based medication assistance system that combines **Generative AI, voice interaction, multilingual communication, medication assistance, and reminders** into one simple conversational experience.
-
-Instead of forcing users to navigate complicated healthcare interfaces, KAYA allows them to communicate naturally through **text and voice**.
-
-> 🎯 **Goal:** Make medication-related assistance simpler, more accessible, and easier to interact with.
+**KAYA AI 1.0:**  
+https://kaya-ai.streamlit.app/
 
 ---
 
-# 🚨 The Problem
+## 💡 The Problem
 
-Medication management can become difficult because users may:
+Managing medications can become difficult for many users.
 
-- ⏰ Forget medication schedules
-- 💊 Manage multiple medicines
-- 🌐 Face language barriers
-- 📖 Have difficulty understanding medication-related information
-- 🖥️ Find complicated digital interfaces difficult to use
-- 🗣️ Prefer communicating through voice rather than typing
+Common challenges include:
 
-KAYA approaches this problem through a **conversational AI-based interface**.
+- Forgetting medication schedules
+- Managing multiple medicines
+- Understanding medication-related information
+- Language barriers
+- Difficulty using complicated digital interfaces
+- Need for simple and natural assistance
+
+KAYA was designed to address these challenges through an AI-based conversational interface.
 
 ---
 
-# 💡 Our Solution
+## 🚀 Our Solution
 
-KAYA brings multiple capabilities together:
+KAYA AI provides a simple way for users to interact with a medication-focused AI assistant using **text and voice**.
+
+Instead of navigating through complicated interfaces, users can communicate naturally with KAYA and receive AI-powered assistance.
+
+The core concept combines:
+
+**Conversational AI + Voice Interaction + Multilingual Support + Medication Assistance + Reminders**
+
+---
+
+## ✨ Key Features
+
+### 🤖 AI Conversational Assistant
+
+KAYA uses generative AI to understand natural-language requests and generate conversational responses.
+
+### 🗣️ Voice Interaction
+
+Users can interact with KAYA using voice, making the system more natural and accessible.
+
+### 🌐 Multilingual Interaction
+
+KAYA is designed to support interaction in multiple languages, helping reduce language barriers.
+
+### 💊 Medication Assistance
+
+KAYA provides medication-focused assistance and information through its application.
+
+### ⏰ Medication Reminders
+
+The application includes functionality for managing medication reminders and schedules.
+
+### 🖥️ Simple Interface
+
+KAYA 1.0 uses a Streamlit-based interface focused on straightforward interaction.
+
+---
+
+# ⚙️ How KAYA Works
+
+The basic interaction flow is:
 
 ```text
-        🤖 Conversational AI
-                 +
-          🗣️ Voice Interaction
-                 +
-        🌐 Multilingual Support
-                 +
-        💊 Medication Assistance
-                 +
-           ⏰ Reminders
-                 ↓
-              🩺 KAYA AI
+             USER
+               │
+               ▼
+        Voice / Text Input
+               │
+               ▼
+        KAYA 1.0 Application
+               │
+               ▼
+        AI / Application Logic
+          ┌────┼────┐
+          │    │    │
+          ▼    ▼    ▼
+         AI  Medication  Reminders
+          │    │    │
+          └────┼────┘
+               ▼
+        Response Generation
+               │
+          ┌────┴────┐
+          ▼         ▼
+        Text      Voice
+          │         │
+          └────┬────┘
+               ▼
+              USER
